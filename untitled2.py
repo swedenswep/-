@@ -47,12 +47,22 @@ class PlayerLeft(pg.sprite.Sprite):
         self.image = pg.image.load('images/block.png')
         self.rect = self.image.get_rect()
         self.rect.center = [240,360]
+    def move(self, direction):
+        if direction == 'w' and not pg.sprite.collide_rect(self, top_line):
+            self.rect.y -= 10
+        if direction == 's' and not pg.sprite.collide_rect(self, top_line):
+            self.rect.y += 10
 class PlayerRight(pg.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pg.image.load('images/block.png')
         self.rect = self.image.get_rect()
         self.rect.center = [960,360]
+    def move(self, direction):
+        if direction == 'o' and not pg.sprite.collide_rect(self, top_line):
+            self.rect.y -= 10
+        if direction == 'l' and not pg.sprite.collide_rect(self, top_line):
+            self.rect.y += 10
 
 pg.init()
 window_size = (1280,720)
@@ -105,20 +115,15 @@ while not done:
                 if event.key == pg.K_DELETE:
                     for b in balls:
                         b.kill()
-            #player移動 但是動不了哭啊
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_UP:
-                    playerl = PlayerLeft()
-                    y -= 10
-
-
-
+         
 #update game state
 #redraw
     screen.fill((0,0,0))
     balls.update()
     sprites.draw(screen)
     pg.display.update()
+    playerleft.move()
+    playerright.move()
 
     while pause:
         for event in pg.event.get():
