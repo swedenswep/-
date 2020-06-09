@@ -47,12 +47,27 @@ class PlayerLeft(pg.sprite.Sprite):
         self.image = pg.image.load('images/block.png')
         self.rect = self.image.get_rect()
         self.rect.center = [240,360]
+    
+    def move(self, direction):
+        if direction == 'w' and not pg.sprite.collide_rect(self, top_line):
+            self.rect.y -= 10
+        if direction == 's' and not pg.sprite.collide_rect(self, bottom_line):
+            self.rect.y += 10
+        
+
 class PlayerRight(pg.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pg.image.load('images/block.png')
         self.rect = self.image.get_rect()
         self.rect.center = [960,360]
+        
+    def move(self, direction):
+        if direction == 'o' and not pg.sprite.collide_rect(self, top_line):
+            self.rect.y -= 10
+        if direction == 'l' and not pg.sprite.collide_rect(self, bottom_line):
+            self.rect.y += 10
+        
 
 pg.init()
 window_size = (1280,720)
@@ -76,9 +91,10 @@ playerleft = PlayerLeft()
 playerright = PlayerRight()
 
 #群組
-horiz_walls = pg.sprite.Group(top_line, bottom_line)
-vert_walls = pg.sprite.Group(left_line, right_line)
+horiz_walls = pg.sprite.Group(top_line, bottom_line, playerleft, playerright)
+vert_walls = pg.sprite.Group(left_line, right_line, playerleft, playerright)
 balls = pg.sprite.Group(ball)
+#player = pg.sprite.Group(playerleft, playerleft)
 sprites = pg.sprite.OrderedUpdates(horiz_walls,vert_walls, balls, playerleft, playerright)  
 done = False
 pause = False  
@@ -105,11 +121,6 @@ while not done:
                 if event.key == pg.K_DELETE:
                     for b in balls:
                         b.kill()
-            #player移動 但是動不了哭啊
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_UP:
-                    playerl = PlayerLeft()
-                    y -= 10
 
 
 
@@ -119,6 +130,11 @@ while not done:
     balls.update()
     sprites.draw(screen)
     pg.display.update()
+    #playerleft.move('w')
+    playerleft.move('s')
+    #playerright.move('o')
+    playerright.move('l')
+
 
     while pause:
         for event in pg.event.get():
